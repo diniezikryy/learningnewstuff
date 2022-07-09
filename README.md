@@ -1,1 +1,1 @@
-#learningnewstuff
+Just a collection of tutorial projects to get started on new technologies i wish to learn about
