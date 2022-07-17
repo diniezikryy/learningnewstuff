@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import React from "react";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Column = ({ column, tasks }) => {
   console.log(tasks);
@@ -18,14 +19,52 @@ const Column = ({ column, tasks }) => {
             {column.title}
           </Text>
         </Flex>
-
-        <Flex px="1.5rem" flex={1} flexDir="column">
-          {tasks.map((task) => (
-            <Flex mb="1rem" h="72px" bg="card-bg" rounded="3px" p="1.5rem">
-              <Text>{task.content}</Text>
+        <Droppable droppableId={column.id}>
+          {(droppableProvided, droppableSnapshot) => (
+            <Flex
+              px="1.5rem"
+              flex={1}
+              flexDir="column"
+              ref={droppableProvided.innerRef}
+              {...droppableProvided.droppableProps}
+            >
+              {tasks.map((task, index) => (
+                <Draggable
+                  key={task.id}
+                  draggableId={`${task.id}`}
+                  index={index}
+                >
+                  {(draggableProvided, draggableSnapshot) => (
+                    <Flex
+                      key={task.id}
+                      mb="1rem"
+                      h="72px"
+                      bg="card-bg"
+                      rounded="3px"
+                      p="1.5rem"
+                      outline="2px solid"
+                      outlineColor={
+                        draggableSnapshot.isDragging
+                          ? "card-border"
+                          : "transparent"
+                      }
+                      boxShadow={
+                        draggableSnapshot.isDragging
+                          ? "0 5px 10px rgba(0,0,0,0.6)"
+                          : "unset"
+                      }
+                      ref={draggableProvided.innerRef}
+                      {...draggableProvided.draggableProps}
+                      {...draggableProvided.dragHandleProps}
+                    >
+                      <Text>{task.content}</Text>
+                    </Flex>
+                  )}
+                </Draggable>
+              ))}
             </Flex>
-          ))}
-        </Flex>
+          )}
+        </Droppable>
       </Flex>
     </Flex>
   );
