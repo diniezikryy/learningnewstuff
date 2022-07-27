@@ -11,6 +11,9 @@ import {
   where,
   limit,
   getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
 } from "@firebase/firestore";
 
 import { useState, useEffect } from "react";
@@ -52,7 +55,25 @@ const Home: NextPage = () => {
     setTodos(result);
   };
 
-  console.log(todos);
+  const updateTodo = async (documentId: string) => {
+    // Creates a pointer to the document id
+    const _todo = doc(firestore, `todos/${documentId}`);
+    // Update the doc by setting done to true
+    await updateDoc(_todo, {
+      done: true,
+    });
+    // Retrieves todo
+    getTodos();
+  };
+
+  const deleteTodo = async (documentId: string) => {
+    // Creates a pointer to the Document id
+    const _todo = doc(firestore, `todos/${documentId}`);
+    // Deletes the doc
+    await deleteDoc(_todo);
+    // Retrieves todos
+    getTodos();
+  };
 
   return (
     <div className={styles.container}>
@@ -83,8 +104,12 @@ const Home: NextPage = () => {
                   <h2>{todo.data().title}</h2>
                   <p>{todo.data().description}</p>
                   <div className={styles.cardActions}>
-                    <button type="button">Mark as done</button>
-                    <button type="button">Delete</button>
+                    <button type="button" onClick={() => updateTodo(todo.id)}>
+                      Mark as done
+                    </button>
+                    <button type="button" onClick={() => deleteTodo(todo.id)}>
+                      Delete
+                    </button>
                   </div>
                 </div>
               );
